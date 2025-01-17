@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuiz } from "@/lib/hooks/useQuiz";
 import Start from "@/lib/components/Start";
 import Question from "@/lib/components/Question";
+import Streak from '@/lib/components/Streak';
 import { shuffleArray } from "@/lib/utils/utils";
 import {
   Card,
@@ -18,6 +19,8 @@ const App = () => {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [questionCount, setQuestionCount] = useState<number>(5);
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
   const { addScore } = useQuiz();
   const [questions, setQuestions] = useState<QuestionType[] | null>(null);
   const startQuiz = async ({
@@ -39,6 +42,8 @@ const App = () => {
       setQuestions(shuffledQuestions);
       setQuestionCount(questionCount);
       setGameState("playing");
+      setStreak(0);
+      setBestStreak(0);
     } catch (error) {
       console.error("Failed to fetch questions:", error);
     }
@@ -46,7 +51,12 @@ const App = () => {
 
   const handleAnswer = (isCorrect: boolean) => {
     if (isCorrect) {
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      setBestStreak(Math.max(bestStreak, newStreak));
       setScore(score + 1);
+    } else {
+      setStreak(0);
     }
 
     if (currentQuestion + 1 >= questionCount) {
@@ -63,6 +73,7 @@ const App = () => {
     setCurrentQuestion(0);
     setScore(0);
   };
+
   return (
     <div className="col-span-4 container mx-auto px-4 py-8">
       {gameState === "welcome" && <Start onStart={startQuiz} />}
@@ -70,7 +81,10 @@ const App = () => {
       {gameState === "playing" && questions && questions[currentQuestion] && (
         <div className="mt-6">
           <div className="text-center font-semibold mb-4">
-            Question {currentQuestion + 1} of {questionCount}
+            <div>Question {currentQuestion + 1} of {questionCount}</div>
+            <div className="text-sm text-gray-600">
+              Current Streak: {streak} | Best Streak: {bestStreak}
+            </div>
           </div>
           <Question
             key={questions[currentQuestion].id}
@@ -79,6 +93,8 @@ const App = () => {
           />
         </div>
       )}
+
+      <Streak streak={streak} />
 
       {gameState === "finished" && (
         <Card className="w-full max-w-md mx-auto mt-8">
