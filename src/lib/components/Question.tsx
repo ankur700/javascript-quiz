@@ -9,7 +9,8 @@ import {
 } from "@/components/components/ui/card";
 import { Button } from "@/components/components/ui/button";
 import Image from "next/image";
-import type { QuestionType } from "@/lib/types/types";
+import type { QuestionType, OptionWithIndicesType } from "@/lib/types/types";
+import {shuffleArray } from '@/lib/utils/utils';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -20,6 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/components/ui/alert-dialog";
+import { MessageCircleQuestion } from "lucide-react";
 
 const Question = ({
   question,
@@ -35,6 +37,14 @@ const Question = ({
     explanation: string;
   }>();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  const [shuffledOptions] = useState(() => {
+    const optionsWithIndices = question.options.map((opt, idx) => ({
+      text: opt,
+      originalIndex: idx + 1
+    }));
+    return shuffleArray(optionsWithIndices) as OptionWithIndicesType[];
+  });
 
   const handleAnswerClick = async (answerIndex: number) => {
     if (answered) return;
@@ -55,10 +65,9 @@ const Question = ({
       setAnswer(result);
       setAnswered(true);
 
-      // Delay moving to next question so user can see the explanation
-      // setTimeout(() => {
-      //   onAnswer(result.correct);
-      // }, 2000);
+      const audio = new Audio(result.correct ? '/sounds/mixkit-achievement-bell-600.wav' : '/sounds/Incorrect-sound-effect.mp3');
+      audio.play();
+
     } catch (error) {
       console.error("Failed to verify answer:", error);
     }
@@ -72,8 +81,6 @@ const Question = ({
     }
     return "outline";
   };
-
-  console.log(answer, selectedIndex);
 
   return (
     <Card className="w-full max-w-3xl mx-auto mt-8">
@@ -91,15 +98,15 @@ const Question = ({
           />
         )}
         <div className="grid grid-cols-2 gap-4 place-content-center">
-          {question.options.map((option, index) => (
+          {shuffledOptions.map((option, index) => (
             <Button
               key={index}
-              onClick={() => handleAnswerClick(index + 1)}
+              onClick={() => handleAnswerClick(option.originalIndex)}
               className={`w-full text-left self-center justify-start option`}
-              variant={getVariant(index + 1)}
+              variant={getVariant(option.originalIndex)}
               disabled={answered}
             >
-              <div dangerouslySetInnerHTML={{ __html: option }} />
+              {index+1}. <div dangerouslySetInnerHTML={{ __html: option.text }} />
             </Button>
           ))}
         </div>
@@ -108,7 +115,7 @@ const Question = ({
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="outline" disabled={!answered}>
-              Explanation
+              Explanation <MessageCircleQuestion />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
