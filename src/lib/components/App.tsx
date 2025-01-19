@@ -1,18 +1,24 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuiz } from "@/lib/hooks/useQuiz";
 import Start from "@/lib/components/Start";
 import Question from "@/lib/components/Question";
 import Streak from '@/lib/components/Streak';
+import ScoreFeedback from '@/lib/components/ScoreFeedback';
 import { shuffleArray } from "@/lib/utils/utils";
+import ScoreCard from "@/lib/components/ScoreCard";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/components/ui/card";
+import Timer from "@/lib/components/timer";
 import { Button } from "@/components/components/ui/button";
 import type { QuestionType, GameState } from "@/lib/types/types";
+import Fireworks from "react-canvas-confetti/dist/presets/fireworks";
+import { useToast } from "@/components/hooks/use-toast"
+
 
 const App = () => {
   const [gameState, setGameState] = useState<GameState>("welcome"); // welcome, playing, finished
@@ -21,12 +27,17 @@ const App = () => {
   const [questionCount, setQuestionCount] = useState<number>(5);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
-  const { addScore } = useQuiz();
+  const { addScore, scores } = useQuiz();
   const [questions, setQuestions] = useState<QuestionType[] | null>(null);
+  const [timeEnd, setTimeEnd] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [bestScore, setBestScore] = useState(false)
+  const [showFireWorks, setShowFireWorks] = useState(false);
+  const { toast } = useToast()
+
   const startQuiz = async ({
     questionCount,
   }: {
-    name: string;
     questionCount: number;
   }) => {
     try {
@@ -42,6 +53,7 @@ const App = () => {
       setQuestions(shuffledQuestions);
       setQuestionCount(questionCount);
       setGameState("playing");
+      setTimeLeft(questionCount * 30);
       setStreak(0);
       setBestStreak(0);
     } catch (error) {
@@ -55,11 +67,15 @@ const App = () => {
       setStreak(newStreak);
       setBestStreak(Math.max(bestStreak, newStreak));
       setScore(score + 1);
+      if(score > (Math.max(...scores.map((item) => item.score)) * (questionCount/100))){
+        setBestScore(true);
+      }
     } else {
       setStreak(0);
     }
 
-    if (currentQuestion + 1 >= questionCount) {
+    if (currentQuestion + 1 >= questionCount || timeEnd) {
+      console.log(timeEnd);
       const finalScore = ((score + (isCorrect ? 1 : 0)) / questionCount) * 100;
       addScore(finalScore);
       setGameState("finished");
@@ -68,24 +84,55 @@ const App = () => {
     }
   };
 
+  function scorePercentage() {
+    return ((score / questionCount) * 100).toFixed(0);
+  }
+
   const resetQuiz = () => {
     setGameState("welcome");
     setCurrentQuestion(0);
     setScore(0);
+    setTimeLeft(0);
+    setShowFireWorks(false);
+
   };
 
+
+  useEffect(() => {
+    if(timeEnd){
+      const finalScore = (score / questionCount) * 100;
+      addScore(finalScore);
+      setGameState("finished");
+    }
+
+    if(bestScore){
+      toast({
+        title: "New best score",
+        description: `Congratulations, new personal best score ${scorePercentage()}`,
+      })
+    }
+
+    if(gameState === 'finished' && scorePercentage() >= "80"){
+      setShowFireWorks(true);
+    }
+  }, [timeEnd, bestScore, score, gameState]);
+
+
+
   return (
-    <div className="col-span-4 container mx-auto px-4 py-8">
+    <div className="container mx-auto p-4">
       {gameState === "welcome" && <Start onStart={startQuiz} />}
 
       {gameState === "playing" && questions && questions[currentQuestion] && (
-        <div className="mt-6">
-          <div className="text-center font-semibold mb-4">
-            <div>Question {currentQuestion + 1} of {questionCount}</div>
-            <div className="text-sm text-gray-600">
+        <div className="">
+          <div className="text-center ">
+            <h1 className="text-2xl font-bold">Question {currentQuestion + 1} of {questionCount}</h1>
+            <div className="text-sm text-foreground font-semibold">
               Current Streak: {streak} | Best Streak: {bestStreak}
             </div>
+            <Timer seconds={timeLeft} setTimeEnd={setTimeEnd} />
           </div>
+
           <Question
             key={questions[currentQuestion].id}
             question={questions[currentQuestion]}
@@ -94,22 +141,38 @@ const App = () => {
         </div>
       )}
 
-      <Streak streak={streak} />
+      {streak >= 2 && <Streak streak={streak} />}
 
       {gameState === "finished" && (
-        <Card className="w-full max-w-md mx-auto mt-8">
-          <CardHeader>
-            <CardTitle>Quiz Complete!</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-lg mb-4">
-              Your score: {((score / questionCount) * 100).toFixed(1)}%
-            </p>
-            <Button onClick={resetQuiz} className="w-full">
-              Try Again
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="grid md:grid-cols-5">
+          <section className="md:col-span-3">
+            <Card className="w-full max-w-md mx-auto mt-8">
+              <CardHeader>
+                <CardTitle>Quiz Complete!</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {gameState === 'finished' && (
+                  <ScoreFeedback scorePercent={Number(scorePercentage())} />
+                )}
+                <p className="text-lg mb-4">
+                  Your score: {scorePercentage()}%
+                </p>
+                <Button onClick={resetQuiz} className="w-full">
+                  Play Again
+                </Button>
+              </CardContent>
+            </Card>
+          </section>
+
+          <section className="md:col-span-2">
+            <ScoreCard />
+          </section>
+        </div>
+
+      )}
+
+      {showFireWorks && (
+        <Fireworks autorun={{ speed: 3 }} />
       )}
     </div>
   );
