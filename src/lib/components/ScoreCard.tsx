@@ -1,34 +1,46 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/components/ui/card";
 import { useQuiz } from "@/lib/hooks/useQuiz";
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/components/ui/table"
+
+
 
 const ScoredCard = () => {
   const { scores } = useQuiz();
-
+  function formatDateTime(date: Date){
+    const inputDate = new Date(date);
+    const formatedDate = inputDate.toLocaleDateString();
+    const formatedTime = inputDate.toLocaleTimeString();
+    return `${formatedDate}, ${formatedTime}`
+  }
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>Recent Scores</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          {scores.map((score, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center p-2 bg-gray-50 rounded"
-            >
-              <span>{index + 1}</span>
-              <span>{score.score}%</span>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <Table>
+      <TableCaption>A list of your recent scores.</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">Date</TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead>Score</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {scores.map((score, index) => (
+          <TableRow key={index}>
+            <TableCell className="font-medium">{formatDateTime(score.date)}</TableCell>
+            <TableCell>{score.name}</TableCell>
+            <TableCell>{score.score}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
 
