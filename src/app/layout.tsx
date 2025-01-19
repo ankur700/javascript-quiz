@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Site } from "@/lib/utils/config";
-import Navbar from "@/components/Navbar";
-import Main from "@/components/Main";
+import Navbar from "@/lib/components/Navbar";
 import { QuizProvider } from "@/lib/components/QuizProvider";
 import { ThemeProvider } from "@/lib/components/theme-provider";
+import { Toaster } from "@/components/components/ui/toaster";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,7 +41,14 @@ export default function RootLayout({
         >
           <QuizProvider>
             <Navbar />
-            <Main>{children}</Main>
+            <main className="w-full">
+              <div className="container max-w-5xl w-full mx-auto gap-4 p-4">
+                <div className="min-h-[100vh] flex-1 w-full rounded-xl md:min-h-min" >
+                  {children}
+                </div>
+              </div>
+            </main>
+            <Toaster />
           </QuizProvider>
         </ThemeProvider>
       </body>

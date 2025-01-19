@@ -83,7 +83,7 @@ const Question = ({
   };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto mt-8">
+    <Card className="w-full max-w-3xl mx-auto mt-4">
       <CardHeader>
         <CardTitle>{question.question}</CardTitle>
       </CardHeader>

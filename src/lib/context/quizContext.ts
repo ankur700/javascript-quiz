@@ -9,7 +9,7 @@ export const QuizContext = createContext<{
   addScore: (score: number) => void;
 
 }>({
-  scores: [],
+  scores: [{name: '', score: 0, date: new Date() }],
   userName: "",
   setUserName: () => { },
   addScore: () => { },
