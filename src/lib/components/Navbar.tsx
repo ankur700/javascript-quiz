@@ -1,26 +1,62 @@
 "use client";
-import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { Site } from "@/lib/utils/config";
-import ScoreCard from "@/lib/components/ScoreCard";
-import { Button } from "@/lib/components/components/ui/button";
+import {
+  BadgeCheck,
+  Bell,
+  CreditCard,
+  Fullscreen,
+  LogOut,
+  Sparkles,
+} from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/components/ui/dropdown-menu"
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/components/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/components/ui/tooltip"
+
 import { ModeToggle } from "@/lib/components/ThemeToggle";
 import { useQuiz } from "@/lib/hooks/useQuiz";
+import { Button } from "./components/ui/button";
+import { useEffect } from "react";
 
 const Navbar = () => {
-  const [showScoreCard, setShowScoreCard] = useState<boolean>(false);
-  const [showUserDropDown, setShowUserDropDown] = useState<boolean>(false);
   const { userName } = useQuiz();
 
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("keydown", function (e) {
+      if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
+        e.preventDefault();
+        toggleFullScreen();
+      }
+    });
+  })
+
   return (
-    <header className="sticky inset-x-0 top-0 z-30 mx-auto w-full max-w-3xl border border-border bg-background/10 shadow backdrop-blur-md md:top-4 md:rounded-3xl">
-      <nav className=" max-w-3xl flex flex-wrap items-center justify-between mx-auto p-4 px-8">
+    <header className="sticky inset-x-0 top-0 z-30 mx-auto w-full bg-background/10 shadow backdrop-blur-md py-3">
+      <nav className="max-w-5xl flex flex-wrap items-center justify-between mx-auto p-4 px-8">
         <Link
           href="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
@@ -33,62 +69,74 @@ const Navbar = () => {
         <div className="flex gap-4 items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <ModeToggle />
 
-          <Button
-            id="score-button"
-            onClick={() => setShowScoreCard(!showScoreCard)}
-            variant="outline"
-          >
-            Scores
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button aria-label="toggle fullscreen" variant="outline" onClick={toggleFullScreen}>
+                  <Fullscreen />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Toggle fullscreen CTRL + f</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-          {showScoreCard && (
-            <div className="z-50 absolute top-20 right-6 ">
-              <ScoreCard />
-            </div>
-          )}
 
-          <Avatar onClick={() => setShowUserDropDown(!showUserDropDown)}>
-            <AvatarImage src="" />
-            <AvatarFallback>{userName.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
-
-          {showUserDropDown && (
-            <div
-              className="z-50 absolute top-20 right-6 my-4 text-foreground text-base list-none bg-background divide-y rounded-lg shadow divide-primary"
-              id="user-dropdown"
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage src={''} alt={userName} />
+                <AvatarFallback className="rounded-lg">{userName.charAt(0).toUpperCase()}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              side={"bottom"}
+              align="end"
+              sideOffset={4}
             >
-              <div className="px-4 py-3">
-                <span className="block text-sm">{userName}</span>
-              </div>
-              <ul className="py-2" aria-labelledby="user-menu-button">
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm hover:bg-secondary hover:text-secondary-foreground"
-                  >
-                    Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm hover:bg-secondary hover:text-secondary-foreground"
-                  >
-                    Settings
-                  </a>
-                </li>
-
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm hover:bg-secondary hover:text-secondary-foreground"
-                  >
-                    Sign out
-                  </a>
-                </li>
-              </ul>
-            </div>
-          )}
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={''} alt={userName} />
+                    <AvatarFallback className="rounded-lg">{userName.charAt(0).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">{userName}</span>
+                    {/* <span className="truncate text-xs">{user.email}</span> */}
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <Sparkles />
+                  Upgrade to Pro
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <BadgeCheck />
+                  Account
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <CreditCard />
+                  Billing
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Bell />
+                  Notifications
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </nav>
     </header>
