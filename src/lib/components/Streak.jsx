@@ -1,21 +1,35 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/components/ui/alert"
+import { CheckCircle2 } from "lucide-react";
+
+
 const Streak = ({ streak }) => {
-  const getStreakMessage = () => {
-    if (streak >= 10) return "Unstoppable! 🔥";
-    if (streak >= 7) return "Incredible! 🌟";
-    if (streak >= 5) return "Amazing! ⭐";
-    if (streak >= 3) return "Great job! 👏";
-    return "";
+  // const getStreakMessage = () => {
+  //   if (streak >= 10) return "Unstoppable! 🔥";
+  //   if (streak >= 7) return "Incredible! 🌟";
+  //   if (streak >= 5) return "Amazing! ⭐";
+  //   if (streak >= 3) return "Great job! 👏";
+  //   return "";
+  // };
+
+  // const message = getStreakMessage();
+
+  // if (!message) return null;
+
+  if (streak < 2) return null;
+
+  const messages = {
+    2: "Great job! Keep it up!",
+    3: "You're on fire! 🔥",
+    4: "Unstoppable! 🌟",
+    5: "Legendary! 👑"
   };
 
-  const message = getStreakMessage();
-
-  if (!message) return null;
-
   return (
-    <div className="fixed bottom-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
-      <p className="font-bold">{message}</p>
-      <p className="text-sm">{streak} correct in a row!</p>
-    </div>
+    <Alert className="fixed bottom-0 max-w-[16rem] w-full right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
+      <CheckCircle2 className="w-5 h-5" />
+      <AlertTitle className="font-bold">{messages[Math.min(streak, 5)]}</AlertTitle>
+      <AlertDescription className="text-sm">{streak} correct in a row!</AlertDescription>
+    </Alert>
   );
 };
 
