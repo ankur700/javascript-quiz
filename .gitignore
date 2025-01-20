@@ -40,5 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#db
-quiz.db
+#data
+/src/lib/utils/data.js
+
+

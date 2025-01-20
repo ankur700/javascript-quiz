@@ -1,16 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardFooter,
-} from "@/components/components/ui/card";
-import { Button } from "@/components/components/ui/button";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import type { QuestionType, OptionWithIndicesType } from "@/lib/types/types";
-import {shuffleArray } from '@/lib/utils/utils';
+import { shuffleArray } from "@/lib/utils/utils";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -20,8 +20,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/components/ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
 import { MessageCircleQuestion } from "lucide-react";
+import { useQuiz } from "@/lib/hooks/useQuiz";
 
 const Question = ({
   question,
@@ -36,12 +37,14 @@ const Question = ({
     answer: number;
     explanation: string;
   }>();
+  const { pauseTimer, resumeTimer } = useQuiz();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [explanationOpen, setExplanationOpen] = useState(false);
 
   const [shuffledOptions] = useState(() => {
     const optionsWithIndices = question.options.map((opt, idx) => ({
       text: opt,
-      originalIndex: idx + 1
+      originalIndex: idx + 1,
     }));
     return shuffleArray(optionsWithIndices) as OptionWithIndicesType[];
   });
@@ -65,9 +68,12 @@ const Question = ({
       setAnswer(result);
       setAnswered(true);
 
-      const audio = new Audio(result.correct ? '/sounds/mixkit-achievement-bell-600.wav' : '/sounds/Incorrect-sound-effect.mp3');
+      const audio = new Audio(
+        result.correct
+          ? "/sounds/mixkit-achievement-bell-600.wav"
+          : "/sounds/Incorrect-sound-effect.mp3"
+      );
       audio.play();
-
     } catch (error) {
       console.error("Failed to verify answer:", error);
     }
@@ -81,6 +87,14 @@ const Question = ({
     }
     return "outline";
   };
+
+  useEffect(() => {
+    if (explanationOpen) {
+      pauseTimer();
+    } else {
+      resumeTimer();
+    }
+  }, [explanationOpen, pauseTimer, resumeTimer]);
 
   return (
     <Card className="w-full max-w-3xl mx-auto mt-4">
@@ -97,7 +111,7 @@ const Question = ({
             height="400"
           />
         )}
-        <div className="grid grid-cols-2 gap-4 place-content-center">
+        <div className="grid md:grid-cols-2 gap-4 place-content-center">
           {shuffledOptions.map((option, index) => (
             <Button
               key={index}
@@ -106,13 +120,14 @@ const Question = ({
               variant={getVariant(option.originalIndex)}
               disabled={answered}
             >
-              {index+1}. <div dangerouslySetInnerHTML={{ __html: option.text }} />
+              {index + 1}.{" "}
+              <span dangerouslySetInnerHTML={{ __html: option.text }} />
             </Button>
           ))}
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <AlertDialog>
+        <AlertDialog open={explanationOpen} onOpenChange={setExplanationOpen}>
           <AlertDialogTrigger asChild>
             <Button variant="outline" disabled={!answered}>
               Explanation <MessageCircleQuestion />
@@ -125,7 +140,7 @@ const Question = ({
               </AlertDialogTitle>
               <AlertDialogDescription>
                 {answer && (
-                  <div
+                  <span
                     className="text-foreground"
                     dangerouslySetInnerHTML={{ __html: answer.explanation }}
                   />

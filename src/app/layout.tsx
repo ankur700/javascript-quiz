@@ -4,7 +4,7 @@ import { Site } from "@/lib/utils/config";
 import Navbar from "@/lib/components/Navbar";
 import { QuizProvider } from "@/lib/components/QuizProvider";
 import { ThemeProvider } from "@/lib/components/theme-provider";
-import { Toaster } from "@/components/components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
 
@@ -41,12 +41,8 @@ export default function RootLayout({
         >
           <QuizProvider>
             <Navbar />
-            <main className="w-full">
-              <div className="container max-w-5xl w-full mx-auto gap-4 p-4">
-                <div className="min-h-[100vh] flex-1 w-full rounded-xl md:min-h-min" >
-                  {children}
-                </div>
-              </div>
+            <main className="w-full h-full flex items-center justify-center">
+              {children}
             </main>
             <Toaster />
           </QuizProvider>

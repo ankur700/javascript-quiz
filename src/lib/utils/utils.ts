@@ -1,10 +1,4 @@
-import { clsx, type ClassValue } from "clsx"
 import type { QuestionType, OptionWithIndicesType } from "@/lib/types/types";
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
 
 export const shuffleArray = (array: QuestionType[] | OptionWithIndicesType[]): QuestionType[] | OptionWithIndicesType[] => {
   const shuffled = [...array];
@@ -14,3 +8,17 @@ export const shuffleArray = (array: QuestionType[] | OptionWithIndicesType[]): Q
   }
   return array instanceof Array && (array[0] as OptionWithIndicesType).text !== undefined ? shuffled as OptionWithIndicesType[] : shuffled as QuestionType[];
 };
+
+export function getScorePercentage(score: number, questionCount: number) {
+  return Number(((score / questionCount) * 100).toFixed(0));
+}
+
+export function formatter(date: Date) {
+  const inputdate = new Date(date);
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "short",
+    timeStyle: "short",
+    hour12: true,
+  });
+  return formatter.format(inputdate);
+}

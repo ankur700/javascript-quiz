@@ -1,19 +1,14 @@
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/components/ui/card";
-import { Input } from "@/components/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/components/ui/select";
-import { Button } from "@/components/components/ui/button";
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { useQuiz } from "@/lib/hooks/useQuiz";
 
 interface StartProps {
@@ -28,21 +23,21 @@ const Start: React.FC<StartProps> = ({ onStart }) => {
     { value: "40", label: "40" },
   ];
 
-  const { userName, setUserName } = useQuiz();
-  const [name, setName] = useState<string>(userName ?? "");
+  const { user, setUser } = useQuiz();
+  const [name, setName] = useState<string>(user ?? "");
   const [questionCount, setQuestionCount] = useState<number>(10);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    setUserName(name);
-    localStorage.setItem("quizUserName", name);
+    setUser(name);
+    localStorage.setItem("user", name);
     onStart({ name, questionCount: questionCount });
   };
 
   return (
     <Card className="w-full max-w-md mx-auto mt-8">
       <CardHeader>
-        <CardTitle>Welcome to the Quiz!</CardTitle>
+        <CardTitle className="text-center">Welcome to the Quiz!</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">

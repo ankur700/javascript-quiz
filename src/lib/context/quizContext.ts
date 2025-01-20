@@ -4,13 +4,31 @@ import type { Score } from '@/lib/types/types';
 
 export const QuizContext = createContext<{
   scores: Score[];
-  userName: string;
-  setUserName: Dispatch<SetStateAction<string>>;
+  setScores: Dispatch<SetStateAction<Score[]>>
+  user: string;
+  setUser: Dispatch<SetStateAction<string>>;
   addScore: (score: number) => void;
+  timer: string;
+  setTimer: Dispatch<SetStateAction<string>>;
+  startTimer: (seconds: number) => void;
+  pauseTimer: () => void;
+  resumeTimer: () => void;
+  stopTimer: () => void;
+  timeOut: boolean;
+  setTimeOut: Dispatch<SetStateAction<boolean>>
 
 }>({
-  scores: [{name: '', score: 0, date: new Date() }],
-  userName: "",
-  setUserName: () => { },
+  scores: [],
+  setScores: () => { },
+  user: "",
+  setUser: () => { },
   addScore: () => { },
+  timer: "",
+  setTimer: () => { },
+  startTimer: () => { },
+  pauseTimer: () => { },
+  resumeTimer: () => { },
+  stopTimer: () => { },
+  timeOut: false,
+  setTimeOut: () => { }
 });

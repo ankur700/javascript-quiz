@@ -1,6 +1,5 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2 } from "lucide-react";
-
 
 const Streak = ({ streak }) => {
   // const getStreakMessage = () => {
@@ -21,14 +20,18 @@ const Streak = ({ streak }) => {
     2: "Great job! Keep it up!",
     3: "You're on fire! 🔥",
     4: "Unstoppable! 🌟",
-    5: "Legendary! 👑"
+    5: "Legendary! 👑",
   };
 
   return (
-    <Alert className="fixed bottom-0 max-w-[16rem] w-full right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
+    <Alert className=" w-full mx-auto mb-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg">
       <CheckCircle2 className="w-5 h-5" />
-      <AlertTitle className="font-bold">{messages[Math.min(streak, 5)]}</AlertTitle>
-      <AlertDescription className="text-sm">{streak} correct in a row!</AlertDescription>
+      <AlertTitle className="font-bold">
+        {messages[Math.min(streak, 5)]}
+      </AlertTitle>
+      <AlertDescription className="text-sm">
+        {streak} correct in a row!
+      </AlertDescription>
     </Alert>
   );
 };

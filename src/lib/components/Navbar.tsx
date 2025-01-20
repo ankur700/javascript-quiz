@@ -1,41 +1,32 @@
 "use client";
 import Link from "next/link";
-import {
-  BadgeCheck,
-  Bell,
-  CreditCard,
-  Fullscreen,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { Fullscreen, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/components/ui/dropdown-menu"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/components/ui/avatar";
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/components/ui/tooltip"
+} from "@/components/ui/tooltip";
+import { cn } from "@/components/lib/utils";
 
 import { ModeToggle } from "@/lib/components/ThemeToggle";
 import { useQuiz } from "@/lib/hooks/useQuiz";
-import { Button } from "./components/ui/button";
+import { useMobile } from "@/lib/hooks/useMobile";
+import { Button } from "./ui/button";
 import { useEffect } from "react";
 
 const Navbar = () => {
-  const { userName } = useQuiz();
+  const { user } = useQuiz();
+  const { isMobile } = useMobile();
 
   function toggleFullScreen() {
     if (!document.fullscreenElement) {
@@ -45,18 +36,31 @@ const Navbar = () => {
     }
   }
 
+  function logout() {
+    localStorage.removeItem("scores");
+    localStorage.removeItem("user");
+  }
+
   useEffect(() => {
-    window.addEventListener("keydown", function (e) {
+    const fullScreenToggler = (e: KeyboardEvent) => {
       if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
         e.preventDefault();
         toggleFullScreen();
       }
-    });
-  })
+    };
+    window.addEventListener("keydown", fullScreenToggler);
+
+    return () => window.removeEventListener("keydown", fullScreenToggler);
+  });
 
   return (
-    <header className="sticky inset-x-0 top-0 z-30 mx-auto w-full bg-background/10 shadow backdrop-blur-md py-3">
-      <nav className="max-w-5xl flex flex-wrap items-center justify-between mx-auto p-4 px-8">
+    <header
+      className={cn(
+        "mx-auto w-full bg-background/10 shadow backdrop-blur-md py-3",
+        !isMobile ? "sticky inset-x-0 top-0 z-30" : ""
+      )}
+    >
+      <nav className="max-w-5xl flex items-center justify-between mx-auto p-4 px-8">
         <Link
           href="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
@@ -72,7 +76,11 @@ const Navbar = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button aria-label="toggle fullscreen" variant="outline" onClick={toggleFullScreen}>
+                <Button
+                  aria-label="toggle fullscreen"
+                  variant="outline"
+                  onClick={toggleFullScreen}
+                >
                   <Fullscreen />
                 </Button>
               </TooltipTrigger>
@@ -82,12 +90,15 @@ const Navbar = () => {
             </Tooltip>
           </TooltipProvider>
 
-
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={''} alt={userName} />
-                <AvatarFallback className="rounded-lg">{userName.charAt(0).toUpperCase()}</AvatarFallback>
+                <AvatarImage src={""} alt={user} />
+                <AvatarFallback className="rounded-lg">
+                  {user
+                    ? user.charAt(0).toUpperCase()
+                    : "John Doe".charAt(0).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -98,40 +109,17 @@ const Navbar = () => {
             >
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={''} alt={userName} />
-                    <AvatarFallback className="rounded-lg">{userName.charAt(0).toUpperCase()}</AvatarFallback>
-                  </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{userName}</span>
+                    <span className="truncate font-semibold">
+                      {user ?? "John Doe"}
+                    </span>
                     {/* <span className="truncate text-xs">{user.email}</span> */}
                   </div>
                 </div>
               </DropdownMenuLabel>
+
               <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Sparkles />
-                  Upgrade to Pro
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <BadgeCheck />
-                  Account
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard />
-                  Billing
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Bell />
-                  Notifications
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>
                 <LogOut />
                 Log out
               </DropdownMenuItem>
