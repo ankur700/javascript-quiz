@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/components/lib/utils";
-
+import { Github } from "lucide-react";
 import { ModeToggle } from "@/lib/components/ThemeToggle";
 import { useQuiz } from "@/lib/hooks/useQuiz";
 import { useMobile } from "@/lib/hooks/useMobile";
@@ -72,6 +72,15 @@ const Navbar = () => {
 
         <div className="flex gap-4 items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <ModeToggle />
+
+          <Link
+            href="https://github.com/ankur700/javascript-quiz"
+            target="_blank"
+          >
+            <Button variant="outline" aria-label="github">
+              <Github className="w-5 h-5" />
+            </Button>
+          </Link>
 
           <TooltipProvider>
             <Tooltip>
