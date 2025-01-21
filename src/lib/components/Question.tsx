@@ -116,7 +116,7 @@ const Question = ({
             <Button
               key={index}
               onClick={() => handleAnswerClick(option.originalIndex)}
-              className={`w-full text-left self-center justify-start option`}
+              className={`w-full h-full text-left self-center justify-start option`}
               variant={getVariant(option.originalIndex)}
               disabled={answered}
             >
