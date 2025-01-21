@@ -41,6 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 #data
-/src/lib/utils/data.js
+src/lib/utils/data.js
 
 

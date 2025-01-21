@@ -120,7 +120,11 @@ const App = () => {
           </section>
           {!isMobile && (
             <section className="md:col-span-2 mt-6">
-              <Sidebar streak={streak} bestStreak={bestStreak}>
+              <Sidebar
+                className={"sticky top-24"}
+                streak={streak}
+                bestStreak={bestStreak}
+              >
                 <CountdownTimer />
               </Sidebar>
             </section>
