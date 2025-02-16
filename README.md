@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JavaScript Quiz Game
+
+This repository contains a JavaScript quiz game built with Next.js and TypeScript. The application presents users with multiple-choice questions to test their JavaScript knowledge.
+
+## Features
+
+- **Multiple-choice questions**: Test your understanding of various JavaScript concepts.
+- **Real-time feedback**: Receive immediate feedback on your answers.
+- **Score tracking**: Keep track of your progress throughout the quiz.
+
+## Demo
+
+Check out the live demo of the application: [phos-quiz.vercel.app](https://phos-quiz.vercel.app/)
 
 ## Getting Started
 
-First, run the development server:
+To run this project locally, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Clone the repository**:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   ```bash
+   git clone https://github.com/ankur700/javascript-quiz.git
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Navigate to the project directory**:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   cd javascript-quiz
+   ```
 
-## Learn More
+3. **Install dependencies**:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   # or
+   bun install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Run the development server**:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   # or
+   bun dev
+   ```
 
-## Deploy on Vercel
+5. **Open the application**:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+The project follows the standard Next.js structure with the following notable directories and files:
+
+- `src/`: Contains the main application source code.
+- `public/`: Holds public assets such as images and icons.
+- `pages/`: Includes the Next.js pages for routing.
+- `components/`: Contains reusable React components used throughout the application.
+- `styles/`: Holds the application's global and component-specific styles.
+
+## Technologies Used
+
+- **Next.js**: A React-based framework for server-side rendering and generating static websites.
+- **TypeScript**: A statically typed superset of JavaScript that enhances code quality and maintainability.
+- **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute to this project, please fork the repository and create a new branch for your feature or bug fix. Once your changes are ready, submit a pull request for review.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+
+## Acknowledgements
+
+Special thanks to the Next.js and Vercel teams for their excellent frameworks and deployment platforms.
+
+---
+
+For more information on Next.js, refer to the [Next.js Documentation](https://nextjs.org/docs).
+
+To learn more about deploying Next.js applications, visit the [Vercel Deployment Documentation](https://vercel.com/docs). 
