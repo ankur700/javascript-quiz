@@ -71,7 +71,15 @@ body {
     @apply bg-background text-foreground min-h-[100svh];
   }
 
+  #explanation {
+    @apply leading-7;
+
+    code {
+      @apply bg-secondary text-success;
+    }
+  }
+
   code {
-    @apply bg-secondary text-success p-1 space-x-2 ml-1 rounded-sm whitespace-pre-wrap;
+    @apply p-1 space-x-2 ml-1 rounded-sm whitespace-pre-wrap
   }
 }

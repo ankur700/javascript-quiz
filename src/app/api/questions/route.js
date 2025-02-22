@@ -1,7 +1,7 @@
 // app/api/questions/route.js
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { Data } from "@/lib/utils/data";
+import { Data } from "@/lib/utils/questions";
 
 export async function GET() {
   try {

@@ -138,7 +138,7 @@ const Question = ({
               <AlertDialogTitle>
                 {answer?.correct ? "Correct " : "Wrong "} Answer
               </AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogDescription id="explanation">
                 {answer && (
                   <span
                     className="text-foreground"
